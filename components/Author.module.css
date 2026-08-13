@@ -1,0 +1,72 @@
+.section {
+  background: var(--navy);
+  color: var(--cream);
+  padding: var(--section-y) var(--gutter);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: clamp(32px, 5vw, 60px);
+  align-items: center;
+}
+
+.column {
+  max-width: 620px;
+}
+
+.kicker {
+  font-family: var(--font-caveat), cursive;
+  font-size: 32px;
+  color: var(--orange);
+  margin: 0;
+}
+
+.heading {
+  font-family: var(--font-anton), sans-serif;
+  font-weight: 400;
+  font-size: clamp(38px, 4.4vw, 58px);
+  line-height: 1;
+  text-transform: uppercase;
+  margin: 8px 0 20px;
+}
+
+.prose {
+  font-family: var(--font-garamond), serif;
+  font-size: 20px;
+  line-height: 1.6;
+  color: rgba(251, 244, 228, 0.88);
+  margin: 0 0 16px;
+  text-wrap: pretty;
+}
+
+.prose:last-child {
+  margin-bottom: 0;
+}
+
+.portraitWrap {
+  display: flex;
+  justify-content: center;
+}
+
+.portrait {
+  width: min(100%, 320px);
+  aspect-ratio: 4 / 5;
+  border-radius: 10px;
+  background: rgba(251, 244, 228, 0.08);
+  border: 1.5px dashed rgba(251, 244, 228, 0.4);
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.portraitLabel {
+  text-align: center;
+  font: 500 14px/1.6 var(--font-archivo), sans-serif;
+  color: rgba(251, 244, 228, 0.6);
+  margin: 0;
+}
+
+.portraitHint {
+  font-size: 12px;
+}

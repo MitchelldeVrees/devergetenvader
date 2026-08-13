@@ -1,0 +1,94 @@
+:root {
+  /* Palette */
+  --cream: #fbf4e4;
+  --cream-alt: #f6edda;
+  --navy: #2e3a63;
+  --orange: #f2a03d;
+  --orange-ink: #7a4a12;
+  --orange-ink-soft: #4a3010;
+  --red: #d8402c;
+  --red-hover: #b32f1e;
+  --red-shadow: #a52d1d;
+  --ink: #1c1c1c;
+
+  /* Rhythm — the design repeats these three clamps everywhere */
+  --gutter: clamp(20px, 5vw, 72px);
+  --section-y: clamp(52px, 7vw, 92px);
+  --measure: 1240px;
+
+  /* Hero display size. Shared by the wordmark and its strike-through bar,
+     which sizes itself in `em` against exactly this value. */
+  --title: clamp(58px, 8.2vw, 116px);
+
+  /* Sticky nav height, used as scroll offset for anchor targets */
+  --nav-h: 76px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--cream);
+  color: var(--navy);
+  /* `clip`, not `hidden`: `hidden` would make <body> a scroll container and
+     break the sticky nav. */
+  overflow-x: clip;
+  font-family: var(--font-archivo), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--red);
+}
+
+a:hover {
+  color: var(--red-hover);
+}
+
+input {
+  font-family: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--navy);
+  outline-offset: 2px;
+}
+
+/* Utility shared by every full-width band */
+.shell {
+  max-width: var(--measure);
+  margin: 0 auto;
+}
+
+.anchor {
+  scroll-margin-top: var(--nav-h);
+}
+
+@keyframes dvwave {
+  0%,
+  100% {
+    transform: rotate(-7deg);
+  }
+  50% {
+    transform: rotate(12deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

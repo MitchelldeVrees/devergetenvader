@@ -1,0 +1,183 @@
+.hero {
+  background: var(--orange);
+  color: var(--cream);
+  padding: clamp(40px, 6vw, 80px) var(--gutter) clamp(56px, 7vw, 96px);
+  position: relative;
+  overflow: hidden;
+}
+
+.blob {
+  position: absolute;
+  right: -140px;
+  top: -140px;
+  width: 520px;
+  height: 520px;
+  border-radius: 50%;
+  background: rgba(251, 244, 228, 0.09);
+}
+
+.grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: clamp(32px, 5vw, 64px);
+  align-items: center;
+}
+
+/* ---- Wordmark ------------------------------------------------------- */
+
+.wordmark {
+  margin: 0;
+  font-weight: 400;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.lockup {
+  position: relative;
+  display: inline-block;
+  padding-top: 14px;
+}
+
+.display {
+  display: block;
+  font-family: var(--font-anton), Impact, sans-serif;
+  font-size: var(--title);
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+/* Sized in `em` against --title so the bar tracks the word "VERGETEN"
+   at every viewport width. */
+.strike {
+  position: absolute;
+  left: 0;
+  top: calc(14px + 1.24em);
+  height: 0.085em;
+  width: 3.72em;
+  font-size: var(--title);
+  background: var(--red);
+  border-radius: 6px;
+  transform: rotate(-2deg);
+}
+
+.scrawl {
+  position: absolute;
+  left: 1.32em;
+  top: 0;
+  font-family: var(--font-caveat), cursive;
+  font-size: clamp(32px, 4.6vw, 64px);
+  line-height: 1;
+  color: var(--red);
+  transform: rotate(-6deg);
+}
+
+/* ---- Copy & actions ------------------------------------------------- */
+
+.lede {
+  font-family: var(--font-garamond), serif;
+  font-size: clamp(19px, 1.5vw, 25px);
+  line-height: 1.5;
+  max-width: 560px;
+  margin: clamp(20px, 3vw, 32px) 0 0;
+  text-wrap: pretty;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+  margin-top: clamp(26px, 3.5vw, 38px);
+}
+
+.buy {
+  border: 0;
+  background: var(--red);
+  color: var(--cream);
+  text-decoration: none;
+  font: 700 17px/1 var(--font-archivo), sans-serif;
+  padding: 21px 34px;
+  border-radius: 100px;
+  cursor: pointer;
+  box-shadow: 0 6px 0 var(--red-shadow);
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease;
+}
+
+.buy:hover {
+  color: var(--cream);
+  transform: translateY(2px);
+  box-shadow: 0 4px 0 var(--red-shadow);
+}
+
+.buy:active {
+  transform: translateY(6px);
+  box-shadow: 0 0 0 var(--red-shadow);
+}
+
+.secondary {
+  color: var(--cream);
+  text-decoration: none;
+  font: 600 15px/1 var(--font-archivo), sans-serif;
+  border-bottom: 2px solid rgba(251, 244, 228, 0.55);
+  padding-bottom: 4px;
+}
+
+.secondary:hover {
+  color: var(--cream);
+  border-bottom-color: var(--cream);
+}
+
+.shipping {
+  font: 500 14px/1.5 var(--font-archivo), sans-serif;
+  color: rgba(251, 244, 228, 0.9);
+  margin: 18px 0 0;
+}
+
+/* ---- Cover ---------------------------------------------------------- */
+
+.coverWrap {
+  display: flex;
+  justify-content: center;
+  position: relative;
+}
+
+.cover {
+  width: min(100%, 360px);
+  height: auto;
+  display: block;
+  border-radius: 4px;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+  transform: rotate(3deg);
+}
+
+.badge {
+  position: absolute;
+  left: max(0px, calc(50% - 250px));
+  bottom: -26px;
+  width: 124px;
+  height: 124px;
+  border-radius: 50%;
+  background: var(--red);
+  color: var(--cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font: 700 14px/1.3 var(--font-archivo), sans-serif;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+  animation: dvwave 6s ease-in-out infinite;
+}
