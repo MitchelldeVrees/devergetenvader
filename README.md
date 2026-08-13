@@ -31,11 +31,17 @@ npx vercel --prod # productie
 
 ### Environment variables
 
-Alleen optioneel:
+| Variabele                     | Waarvoor                                                              |
+| ----------------------------- | --------------------------------------------------------------------- |
+| `RESEND_API_KEY`              | Resend API-key met **Full access**, nodig om contacten op te slaan    |
+| `RESEND_WAITLIST_SEGMENT_ID`  | ID van het Resend-segment voor de boekwachtlijst                      |
+| `NEXT_PUBLIC_SITE_URL`        | Optionele canonieke URL, bijv. `https://degevondenvader.nl`           |
 
-| Variabele              | Waarvoor                                                              |
-| ---------------------- | --------------------------------------------------------------------- |
-| `NEXT_PUBLIC_SITE_URL` | Canonieke URL voor de OG/Twitter-tags, bijv. `https://degevondenvader.nl` |
+Maak in Resend een segment aan voor de boekwachtlijst. Voeg de twee verplichte
+variabelen daarna toe via **Vercel → Project Settings → Environment Variables**
+en deploy opnieuw. Voor lokaal gebruik kun je `.env.example` kopiëren naar
+`.env.local` en daar de echte waarden invullen. Zet API-keys nooit in een
+variabele die met `NEXT_PUBLIC_` begint.
 
 Zonder deze variabele valt de site terug op `VERCEL_PROJECT_PRODUCTION_URL`
 (zet Vercel zelf) en lokaal op `http://localhost:3000`.
@@ -66,10 +72,4 @@ placeholders:
   dan de leeslimiet van de design-koppeling. Download `assets/cover.png` uit
   het Claude Design-project en overschrijf `public/cover.png`. De afmetingen
   worden bij de build automatisch overgenomen, er hoeft verder niets aangepast.
-- **"In de mand" en "E-book"** in `components/Order.tsx` linken naar `#bestel`.
-  Vervang door de checkout-URL van je webshop.
-- **Het inschrijfformulier** in `components/Order.tsx` toont alleen
-  "Gelukt ✓" — er gaat nog niets naar een mailinglijst. Hang er een
-  route handler of Mailchimp/Buttondown-endpoint achter.
-- **Auteursfoto** in `components/Author.tsx` is een gestippelde plaatshouder.
 - **Algemene voorwaarden** in de footer is nog platte tekst zonder pagina.

@@ -15,7 +15,10 @@ const WaitlistContext = createContext<(() => void) | null>(null);
 
 export function WaitlistProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [isSignedUp, setIsSignedUp] = useState(false);
+  const [submissionState, setSubmissionState] = useState<
+    "idle" | "submitting" | "success" | "error"
+  >("idle");
+  const [errorMessage, setErrorMessage] = useState("");
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
@@ -34,9 +37,39 @@ export function WaitlistProvider({ children }: { children: ReactNode }) {
     };
   }, [isOpen]);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setIsSignedUp(true);
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+
+    setSubmissionState("submitting");
+    setErrorMessage("");
+
+    try {
+      const response = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: formData.get("email"),
+          website: formData.get("website"),
+        }),
+      });
+      const result = (await response.json()) as { error?: string };
+
+      if (!response.ok) {
+        throw new Error(result.error || "Inschrijven is niet gelukt.");
+      }
+
+      setSubmissionState("success");
+      form.reset();
+    } catch (error) {
+      setSubmissionState("error");
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "Inschrijven lukt nu even niet. Probeer het later opnieuw.",
+      );
+    }
   }
 
   return (
@@ -63,7 +96,7 @@ export function WaitlistProvider({ children }: { children: ReactNode }) {
             <span aria-hidden="true">×</span>
           </button>
 
-          {isSignedUp ? (
+          {submissionState === "success" ? (
             <div className={styles.success} role="status">
               <span className={styles.check} aria-hidden="true">
                 ✓
@@ -106,14 +139,35 @@ export function WaitlistProvider({ children }: { children: ReactNode }) {
                   autoComplete="email"
                   placeholder="jouw@mail.nl"
                   className={styles.input}
+                  disabled={submissionState === "submitting"}
                   autoFocus
                 />
-                <button type="submit" className={styles.submit}>
-                  Houd mij op de hoogte
+                <label className={styles.honeypot} aria-hidden="true">
+                  Website
+                  <input
+                    type="text"
+                    name="website"
+                    tabIndex={-1}
+                    autoComplete="off"
+                  />
+                </label>
+                <button
+                  type="submit"
+                  className={styles.submit}
+                  disabled={submissionState === "submitting"}
+                >
+                  {submissionState === "submitting"
+                    ? "Even wachten…"
+                    : "Houd mij op de hoogte"}
                 </button>
               </form>
+              {submissionState === "error" && (
+                <p className={styles.error} role="alert">
+                  {errorMessage}
+                </p>
+              )}
               <p className={styles.finePrint}>
-                Alleen een bericht wanneer het boek verschijnt. Geen spam.
+                Alleen updates over het boek. Je kunt je altijd uitschrijven.
               </p>
             </>
           )}
