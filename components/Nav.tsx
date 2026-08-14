@@ -12,6 +12,9 @@ export function Nav() {
         <a href="#fragment" className={styles.link}>
           Fragment
         </a>
+        <a href="#faq" className={styles.link}>
+          Vragen
+        </a>
         <WaitlistButton className={styles.cta}>
           Bestel · {site.price}
         </WaitlistButton>

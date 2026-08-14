@@ -14,6 +14,9 @@ export function Footer() {
           <a href="#fragment" className={styles.link}>
             Fragment
           </a>
+          <a href="#faq" className={styles.link}>
+            Vragen
+          </a>
           <a href={`mailto:${site.email}`} className={styles.link}>
             Contact
           </a>

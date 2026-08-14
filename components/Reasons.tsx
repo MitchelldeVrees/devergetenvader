@@ -8,7 +8,7 @@ const reasons = [
   },
   {
     n: "02",
-    title: "In één avond uit",
+    title: "Voor in de wachtkamer",
     body: "Korte hoofdstukken. Precies lang genoeg voor een wachtkamer bij de verloskundige.",
   },
   {

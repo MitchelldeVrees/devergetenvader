@@ -14,7 +14,8 @@ export function Hero() {
             {/* The joke of the cover: "vergeten" struck through, "gevonden"
                 scrawled over it. Read aloud as one line for screen readers. */}
             <span className={styles.srOnly}>
-              De vergeten vader — de vergeten vader
+              De vergeten vader — het boek voor de aanstaande vader, hét
+              cadeau bij een zwangerschap
             </span>
             <span className={styles.lockup} aria-hidden="true">
               <span className={styles.display}>
@@ -53,7 +54,7 @@ export function Hero() {
         <div className={styles.coverWrap}>
           <Image
             src={cover}
-            alt={`Omslag van ${site.title}`}
+            alt={`Omslag van ${site.title} — cadeau voor de aanstaande vader`}
             className={styles.cover}
             priority
             sizes="(max-width: 720px) 100vw, 360px"
