@@ -56,7 +56,7 @@ app/
   fonts.ts        Anton / Archivo / EB Garamond / Caveat via next/font
 components/       één component + één .module.css per sectie
 lib/site.ts       prijs, paginacount, contactmail
-public/cover.png  omslag
+public/cover.jpg  omslag
 ```
 
 Design-tokens (kleuren, `--gutter`, `--section-y`, `--title`) staan in
@@ -67,9 +67,4 @@ Design-tokens (kleuren, `--gutter`, `--section-y`, `--title`) staan in
 Het originele design was een klikbaar prototype. Deze dingen zijn nog
 placeholders:
 
-- **`public/cover.png` is een plaatshouder.** Het echte omslag uit het
-  design-project (469×640) kon niet worden opgehaald — het bestand is groter
-  dan de leeslimiet van de design-koppeling. Download `assets/cover.png` uit
-  het Claude Design-project en overschrijf `public/cover.png`. De afmetingen
-  worden bij de build automatisch overgenomen, er hoeft verder niets aangepast.
 - **Algemene voorwaarden** in de footer is nog platte tekst zonder pagina.

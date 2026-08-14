@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { site } from "@/lib/site";
-import cover from "@/public/cover.png";
+import cover from "@/public/cover.jpg";
 import { WaitlistButton } from "./WaitlistModal";
 import styles from "./Hero.module.css";
 

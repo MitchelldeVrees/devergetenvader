@@ -5,8 +5,8 @@ import styles from "./Fragment.module.css";
 
 const scores = [
   { label: "De 20-wekenecho", score: "6/10", peak: false },
-  { label: "De babykamer", score: "9/10", peak: false },
-  { label: "De bevalling", score: "10/10", peak: true },
+  { label: "De bevalling", score: "10/10", peak: false },
+  { label: "De eerste minuten", score: "0/10", peak: true },
 ];
 
 export function Fragment() {

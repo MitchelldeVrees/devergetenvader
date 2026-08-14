@@ -25,9 +25,9 @@ export const metadata: Metadata = {
     type: "book",
     images: [
       {
-        url: "/cover.png",
-        width: 469,
-        height: 640,
+        url: "/cover.jpg",
+        width: 1055,
+        height: 1491,
         alt: `Omslag van ${site.title}`,
       },
     ],
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: `${site.title} — het boek voor de aanstaande vader`,
     description: site.description,
-    images: ["/cover.png"],
+    images: ["/cover.jpg"],
   },
 };
 
