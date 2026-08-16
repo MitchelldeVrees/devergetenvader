@@ -70,3 +70,9 @@
 .portraitHint {
   font-size: 12px;
 }
+
+@media (max-width: 520px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

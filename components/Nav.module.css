@@ -57,3 +57,24 @@
   background: var(--red-hover);
   color: var(--cream);
 }
+
+@media (max-width: 520px) {
+  .nav {
+    min-height: var(--nav-h);
+    padding-block: 10px;
+  }
+
+  .brand {
+    font-size: 12px;
+    letter-spacing: 0.1em;
+  }
+
+  .link {
+    display: none;
+  }
+
+  .cta {
+    min-height: 44px;
+    padding: 12px 17px;
+  }
+}

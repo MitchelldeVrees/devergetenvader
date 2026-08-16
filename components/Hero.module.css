@@ -181,3 +181,44 @@
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
   animation: dvwave 6s ease-in-out infinite;
 }
+
+@media (max-width: 520px) {
+  .hero {
+    padding-top: 28px;
+    padding-bottom: 64px;
+  }
+
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 42px;
+  }
+
+  .actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .buy {
+    min-height: 52px;
+    padding: 17px 22px;
+    width: 100%;
+  }
+
+  .secondary {
+    align-self: center;
+    min-height: 44px;
+    padding-top: 13px;
+  }
+
+  .cover {
+    width: min(88vw, 340px);
+  }
+
+  .badge {
+    bottom: -34px;
+    left: 0;
+    height: 108px;
+    width: 108px;
+    font-size: 12px;
+  }
+}

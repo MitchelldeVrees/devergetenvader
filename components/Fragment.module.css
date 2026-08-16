@@ -122,3 +122,13 @@
   background: var(--red);
   color: var(--cream);
 }
+
+@media (max-width: 520px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .card {
+    padding: 24px 20px;
+  }
+}

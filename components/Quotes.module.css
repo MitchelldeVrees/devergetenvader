@@ -30,3 +30,13 @@
   color: rgba(46, 58, 99, 0.7);
   margin-top: 16px;
 }
+
+@media (max-width: 520px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .card {
+    padding: 24px 20px;
+  }
+}

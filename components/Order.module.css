@@ -153,3 +153,25 @@
   color: rgba(46, 58, 99, 0.6);
   margin: 14px 0 0;
 }
+
+@media (max-width: 520px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .buyCard,
+  .waitCard {
+    padding: 26px 20px;
+  }
+
+  .primary,
+  .ghost,
+  .waitButton {
+    min-height: 48px;
+  }
+
+  .waitButton {
+    justify-content: center;
+    width: 100%;
+  }
+}

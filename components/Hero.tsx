@@ -57,7 +57,8 @@ export function Hero() {
             alt={`Omslag van ${site.title} — cadeau voor de aanstaande vader`}
             className={styles.cover}
             priority
-            sizes="(max-width: 720px) 100vw, 360px"
+            fetchPriority="high"
+            sizes="(max-width: 480px) calc(100vw - 40px), 360px"
           />
           <div className={styles.badge}>
             Hét cadeau
