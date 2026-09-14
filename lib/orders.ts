@@ -107,6 +107,21 @@ const tokenFor = (requestId: string) =>
     .update(requestId)
     .digest("hex");
 
+async function createMolliePayment(order: Order) {
+  try {
+    return await mollie("", order.payment_request, order.request_id);
+  } catch (error) {
+    // Mollie occasionally reports our idempotency key as already used with
+    // different parameters (seen when the same key was sent under a
+    // different API key/mode outside our own retry logic). A 400 here means
+    // Mollie created nothing for this attempt, so retrying once with a
+    // fresh key is safe -- validPayment() still verifies the result matches
+    // this exact order before we ever trust it.
+    if (error instanceof Error && /idempotency key/i.test(error.message))
+      return mollie("", order.payment_request, `${order.request_id}:retry`);
+    throw error;
+  }
+}
 export async function createCheckout(input: CheckoutInput) {
   const sql = db();
   const inputHash = hash(JSON.stringify(input));
@@ -156,7 +171,7 @@ export async function createCheckout(input: CheckoutInput) {
       };
     if (!canRetryCreation(order.created_at))
       throw new Error("RECONCILIATION_REQUIRED");
-    const payment = await mollie("", order.payment_request, order.request_id);
+    const payment = await createMolliePayment(order);
     if (!validPayment(payment, { ...order, payment_id: payment.id }))
       throw new Error("Payment mismatch");
     const url = payment._links?.checkout?.href;
