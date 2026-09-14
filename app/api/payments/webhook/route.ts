@@ -11,9 +11,13 @@ export async function POST(request: Request) {
     const orderId = await syncPayment(id);
     if (orderId) await sendConfirmation(orderId);
     return new NextResponse(null, { status: 200 });
-  } catch {
-    // Non-200 asks Mollie to retry; log no buyer data, tokens or provider response.
-    console.error("[webhook] Payment or email reconciliation failed");
+  } catch (error) {
+    // Non-200 asks Mollie to retry; log only the safe, generic error message —
+    // never buyer data, tokens or the raw provider response.
+    console.error(
+      "[webhook] Payment or email reconciliation failed:",
+      error instanceof Error ? error.message : error,
+    );
     return new NextResponse(null, { status: 503 });
   }
 }

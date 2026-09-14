@@ -36,7 +36,12 @@ export async function GET(
         },
       },
     );
-  } catch {
+  } catch (error) {
+    // Log only the safe, generic error message — never buyer data or tokens.
+    console.error(
+      "[order-status] Failed to check payment:",
+      error instanceof Error ? error.message : error,
+    );
     return NextResponse.json(
       {
         error:
