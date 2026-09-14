@@ -50,7 +50,7 @@ export async function POST(request: Request) {
         ? "request conflict"
         : reconcile
           ? "reconciliation required"
-          : "creation failed",
+          : `creation failed: ${error instanceof Error ? error.message : error}`,
     );
     return NextResponse.json(
       {

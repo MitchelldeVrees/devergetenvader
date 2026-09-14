@@ -16,6 +16,16 @@ export async function mollie(
     },
     ...(body ? { body: JSON.stringify(body) } : {}),
   });
-  if (!response.ok) throw new Error(`Payment provider HTTP ${response.status}`);
+  if (!response.ok) {
+    // Mollie's error body only ever describes what was wrong with OUR request
+    // (e.g. an invalid field) — never buyer data — so it's safe to surface.
+    const detail = await response
+      .json()
+      .then((body) => body?.detail || body?.title)
+      .catch(() => undefined);
+    throw new Error(
+      `Payment provider HTTP ${response.status}${detail ? `: ${detail}` : ""}`,
+    );
+  }
   return response.json();
 }
