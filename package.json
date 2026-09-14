@@ -1,22 +1,48 @@
 {
-  "name": "de-gevonden-vader",
+  "name": "de-vergeten-vader",
   "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:checkout": "node scripts/dev-checkout.mjs",
+    "dev:checkout:cloud": "node scripts/dev-checkout.mjs --cloud",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "tsx --test tests/unit.test.ts",
+    "test:orders": "node --conditions=react-server --import tsx --test tests/orders.test.ts",
+    "test:mollie": "node scripts/smoke-mollie.mjs",
+    "test:checkout-ui": "node scripts/smoke-checkout-ui.mjs",
+    "test:e2e": "playwright test",
+    "db:migrate": "node --env-file=.env.local scripts/migrate.mjs",
+    "check:launch": "node --env-file=.env.local scripts/check-launch.mjs"
   },
   "dependencies": {
-    "next": "^15.1.0",
+    "next": "^15.5.25",
+    "postgres": "^3.4.9",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "resend": "^6.19.0"
+    "resend": "^6.19.0",
+    "server-only": "^0.0.1",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@electric-sql/pglite": "^0.5.8",
+    "@playwright/test": "^1.63.0",
     "@types/node": "^22.10.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^15.5.25",
+    "pglite-server": "^0.1.5",
+    "prettier": "^3.9.6",
+    "tsx": "^4.23.13",
     "typescript": "^5.7.0"
+  },
+  "overrides": {
+    "postcss": "^8.5.23",
+    "sharp": "^0.35.4"
   }
 }

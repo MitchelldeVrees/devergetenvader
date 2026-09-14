@@ -1,70 +1,37 @@
-# De gevonden vader
+# De vergeten vader
 
-Landingspagina voor het boek _De gevonden vader_. Next.js (App Router) +
-TypeScript + CSS Modules, klaar om op Vercel te zetten.
+De bestaande warme, redactionele boekwebsite van Sem de Wachter, uitgebreid met statische inhoudspagina's, SEO en een pre-ordercheckout.
 
-Geport vanuit het Claude Design-bestand `De Gevonden Vader - Site.dc.html`.
+**Stack:** Next.js 15 App Router, React 19, TypeScript, CSS Modules, next/image, next/font. Content is statisch gegenereerd; checkout-API's draaien server-side op Node.js. Bestaande Vercel-deployment blijft bruikbaar. Mollie verwerkt iDEAL, PostgreSQL bewaart orders en Resend verwerkt bevestigingen en de bestaande wachtlijst.
 
-## Lokaal draaien
-
-```bash
-npm install
+```text
+npm ci
 npm run dev
 ```
 
-Open http://localhost:3000.
+Open http://localhost:3000. Zonder configuratie kun je alle inhoud bekijken; afrekenen is zichtbaar maar uitgeschakeld. Vul `.env.local` vanuit `.env.example` met je eigen gegevens. Zie **[SEO_SETUP.md](SEO_SETUP.md)** voor de volledige livegang, betaaltests, operationele controles en exacte Google Search Console-stappen.
 
-## Deployen op Vercel
+Met een Mollie-testsleutel in `.env.local` kun je `npm run dev:checkout` starten. De werkende testcheckout staat dan op http://localhost:3001/bestellen. Dit gebruikt een lokale, blijvende testdatabase in `.test-db/`, simuleert betalingen via de echte Mollie-testomgeving en verstuurt geen boeken of e-mails. Productie blijft afzonderlijk beveiligd tegen ontbrekende configuratie. Voor Vercel/Supabase-testen kun je expliciet `CHECKOUT_TEST_MODE=true` gebruiken met een testkey; deze uitzondering werkt nooit met een livekey.
 
-Vercel herkent Next.js vanzelf — er is geen `vercel.json` nodig.
+Gebruik `npm run dev:checkout:cloud` om dezelfde lokale testcheckout met de geconfigureerde Supabase-database te starten. De tabellen zijn aangemaakt in `bookshop`. Met die server actief voert `npm run test:mollie` drie gelijktijdige requests uit en controleert dat één testorder en één checkout ontstaan. Dit maakt een onbetaalde testbetaling aan; het doet geen echte afschrijving. `npm run test:checkout-ui` test het formulier met onderschepte API-responses.
 
-1. Push deze map naar een Git-repo (GitHub/GitLab/Bitbucket).
-2. Vercel → **Add New… → Project** → repo importeren.
-3. Framework preset staat op **Next.js**, build command `next build`. Deploy.
+## Waar je iets wijzigt
 
-Of vanaf de commandline:
+| Onderdeel                                           | Bestand                                        |
+| --------------------------------------------------- | ---------------------------------------------- |
+| Boek, prijzen, omslag, verzendbeleid, ISBN/pagina's | `lib/site.ts`                                  |
+| Artikelen en commerciële landingspagina's           | `lib/content.ts`                               |
+| Metadata en Product/Book/Offer                      | `lib/seo.ts`                                   |
+| Homepage en bestaande secties                       | `app/page.tsx`, `components/`                  |
+| Kleuren, typografie, mobiele lay-out                | `app/globals.css`, CSS Modules                 |
+| Checkout, orders en providercontrole                | `lib/orders.ts`, `lib/mollie.ts`, `app/api/`   |
+| Database                                            | `db/001_orders.sql`                            |
+| Consent en events                                   | `components/Analytics.tsx`, `lib/analytics.ts` |
 
-```bash
-npx vercel        # preview
-npx vercel --prod # productie
-```
+Artikelen toevoegen: voeg een object toe aan `contentPages`. Route, metadata en sitemap volgen automatisch. Plaats relevante interne links en voeg het artikel eventueel toe aan gerelateerde pagina's. Voeg geen fictieve recensies, data of auteursclaims toe.
 
-### Environment variables
+## Kwaliteitscontroles
 
-| Variabele                     | Waarvoor                                                              |
-| ----------------------------- | --------------------------------------------------------------------- |
-| `RESEND_API_KEY`              | Resend API-key met **Full access**, nodig om contacten op te slaan    |
-| `RESEND_WAITLIST_SEGMENT_ID`  | ID van het Resend-segment voor de boekwachtlijst                      |
-| `NEXT_PUBLIC_SITE_URL`        | Optionele canonieke URL, bijv. `https://degevondenvader.nl`           |
+`npm run lint`, `npm run typecheck`, `npm test`, `npm run test:orders`, `npm run build`, `npm run test:e2e`. Browsercontroles gebruiken standaard Edge op Windows en draaien tegen de productiebuild. Rapporten/schermafbeeldingen staan lokaal in `playwright-report/` en `artifacts/` (niet in git).
 
-Maak in Resend een segment aan voor de boekwachtlijst. Voeg de twee verplichte
-variabelen daarna toe via **Vercel → Project Settings → Environment Variables**
-en deploy opnieuw. Voor lokaal gebruik kun je `.env.example` kopiëren naar
-`.env.local` en daar de echte waarden invullen. Zet API-keys nooit in een
-variabele die met `NEXT_PUBLIC_` begint.
-
-Zonder deze variabele valt de site terug op `VERCEL_PROJECT_PRODUCTION_URL`
-(zet Vercel zelf) en lokaal op `http://localhost:3000`.
-
-## Structuur
-
-```
-app/
-  layout.tsx      metadata, fonts, globals
-  page.tsx        zet de secties op volgorde
-  globals.css     kleuren, ritme-tokens, keyframes
-  fonts.ts        Anton / Archivo / EB Garamond / Caveat via next/font
-components/       één component + één .module.css per sectie
-lib/site.ts       prijs, paginacount, contactmail
-public/cover.jpg  omslag
-```
-
-Design-tokens (kleuren, `--gutter`, `--section-y`, `--title`) staan in
-`app/globals.css`; prijs en contactgegevens in `lib/site.ts`.
-
-## Nog aan te sluiten
-
-Het originele design was een klikbaar prototype. Deze dingen zijn nog
-placeholders:
-
-- **Algemene voorwaarden** in de footer is nog platte tekst zonder pagina.
+Het testpakket bestrijkt prijsvalidatie, betaalverificatie, idempotency, databaseopslag, time-out-herstel, bevestiging zonder duplicaten, metadata, sitemap, openbare links, toetsenbord/dialog, toegankelijkheid, zes schermbreedtes en vervalste betaalstatussen. Echte providercredentials, e-mailbezorging, platformredirects en Google-indexering vergen de controles na deployment.

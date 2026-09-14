@@ -36,7 +36,9 @@
   background: rgba(46, 58, 99, 0.1);
   color: var(--navy);
   cursor: pointer;
-  font: 400 27px/1 var(--font-archivo), sans-serif;
+  font:
+    400 27px/1 var(--font-archivo),
+    sans-serif;
 }
 
 .close:hover {
@@ -46,7 +48,9 @@
 .kicker {
   margin: 0 0 12px;
   color: var(--red);
-  font: 700 12px/1 var(--font-archivo), sans-serif;
+  font:
+    700 12px/1 var(--font-archivo),
+    sans-serif;
   letter-spacing: 0.16em;
   text-transform: uppercase;
 }
@@ -55,7 +59,9 @@
   max-width: 440px;
   margin: 0;
   color: var(--navy);
-  font: 400 clamp(36px, 7vw, 56px)/0.98 var(--font-anton), sans-serif;
+  font:
+    400 clamp(36px, 7vw, 56px)/0.98 var(--font-anton),
+    sans-serif;
   text-transform: uppercase;
   text-wrap: balance;
 }
@@ -63,7 +69,9 @@
 .copy {
   max-width: 470px;
   margin: 20px 0 0;
-  font: 400 20px/1.5 var(--font-garamond), serif;
+  font:
+    400 20px/1.5 var(--font-garamond),
+    serif;
   text-wrap: pretty;
 }
 
@@ -105,7 +113,9 @@
   background: var(--red);
   color: var(--cream);
   cursor: pointer;
-  font: 700 15px/1 var(--font-archivo), sans-serif;
+  font:
+    700 15px/1 var(--font-archivo),
+    sans-serif;
 }
 
 .submit:hover,
@@ -130,13 +140,17 @@
 .error {
   margin: 12px 0 0;
   color: var(--red-hover);
-  font: 600 13px/1.5 var(--font-archivo), sans-serif;
+  font:
+    600 13px/1.5 var(--font-archivo),
+    sans-serif;
 }
 
 .finePrint {
   margin: 13px 0 0;
   color: rgba(46, 58, 99, 0.62);
-  font: 500 12px/1.5 var(--font-archivo), sans-serif;
+  font:
+    500 12px/1.5 var(--font-archivo),
+    sans-serif;
 }
 
 .success {
@@ -159,7 +173,9 @@
   border-radius: 50%;
   background: var(--orange);
   color: var(--cream);
-  font: 700 30px/1 var(--font-archivo), sans-serif;
+  font:
+    700 30px/1 var(--font-archivo),
+    sans-serif;
 }
 
 .secondary {
@@ -175,4 +191,14 @@
   .submit {
     width: 100%;
   }
+}
+.dialog {
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+}
+.finePrint {
+  color: var(--navy);
+}
+.check {
+  color: var(--navy);
 }

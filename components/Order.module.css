@@ -14,7 +14,7 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
   gap: clamp(20px, 3vw, 32px);
 }
 
@@ -28,7 +28,9 @@
 }
 
 .buyKicker {
-  font: 600 12px/1 var(--font-archivo), sans-serif;
+  font:
+    600 12px/1 var(--font-archivo),
+    sans-serif;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--orange);
@@ -62,7 +64,9 @@
   color: var(--cream);
   text-decoration: none;
   text-align: center;
-  font: 700 17px/1 var(--font-archivo), sans-serif;
+  font:
+    700 17px/1 var(--font-archivo),
+    sans-serif;
   padding: 20px;
   border-radius: 100px;
   cursor: pointer;
@@ -80,7 +84,9 @@
   color: var(--cream);
   text-decoration: none;
   text-align: center;
-  font: 600 15px/1 var(--font-archivo), sans-serif;
+  font:
+    600 15px/1 var(--font-archivo),
+    sans-serif;
   padding: 17px;
   border-radius: 100px;
   cursor: pointer;
@@ -93,7 +99,9 @@
 }
 
 .payment {
-  font: 500 13px/1.5 var(--font-archivo), sans-serif;
+  font:
+    500 13px/1.5 var(--font-archivo),
+    sans-serif;
   color: rgba(251, 244, 228, 0.6);
   margin: 16px 0 0;
 }
@@ -107,7 +115,9 @@
 }
 
 .waitKicker {
-  font: 600 12px/1 var(--font-archivo), sans-serif;
+  font:
+    600 12px/1 var(--font-archivo),
+    sans-serif;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--red);
@@ -138,7 +148,9 @@
   color: var(--cream);
   border: none;
   cursor: pointer;
-  font: 700 15px/1 var(--font-archivo), sans-serif;
+  font:
+    700 15px/1 var(--font-archivo),
+    sans-serif;
   padding: 16px 26px;
   border-radius: 100px;
   transition: opacity 0.15s ease;
@@ -149,7 +161,15 @@
 }
 
 .finePrint {
-  font: 500 13px/1.5 var(--font-archivo), sans-serif;
+  font:
+    500 13px/1.5 var(--font-archivo),
+    sans-serif;
   color: rgba(46, 58, 99, 0.6);
   margin: 14px 0 0;
+}
+.payment {
+  color: #e4ddce;
+}
+.finePrint {
+  color: var(--navy);
 }

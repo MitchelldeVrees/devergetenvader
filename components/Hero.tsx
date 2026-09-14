@@ -1,7 +1,7 @@
+import Link from "next/link";
 import Image from "next/image";
 import { site } from "@/lib/site";
-import cover from "@/public/cover.jpg";
-import { WaitlistButton } from "./WaitlistModal";
+import { PreorderLink } from "./PreorderLink";
 import styles from "./Hero.module.css";
 
 export function Hero() {
@@ -9,13 +9,11 @@ export function Hero() {
     <header id="top" className={styles.hero}>
       <div className={styles.blob} aria-hidden="true" />
       <div className={`shell ${styles.grid}`}>
-        <div>
+        <div className={styles.copy}>
           <h1 className={styles.wordmark}>
             {/* The joke of the cover: "vergeten" struck through, "gevonden"
                 scrawled over it. Read aloud as one line for screen readers. */}
-            <span className={styles.srOnly}>
-              De vergeten vader — de vergeten vader
-            </span>
+            <span className={styles.srOnly}>De vergeten vader</span>
             <span className={styles.lockup} aria-hidden="true">
               <span className={styles.display}>
                 De
@@ -29,6 +27,10 @@ export function Hero() {
             </span>
           </h1>
 
+          <p className={styles.tagline}>
+            Het grappige en eerlijke boek voor de man naast de buik.
+          </p>
+          <p className={styles.author}>Door {site.author}</p>
           <p className={styles.lede}>
             Negen maanden lang gaat het over haar buik. Terecht. Maar er staat
             ook iemand naast dat bed die geen idee heeft wat hij met zijn handen
@@ -37,26 +39,34 @@ export function Hero() {
           </p>
 
           <div className={styles.actions}>
-            <WaitlistButton className={styles.buy}>
-              Bestel het boek — {site.price}
-            </WaitlistButton>
-            <a href="#fragment" className={styles.secondary}>
-              Lees eerst een hoofdstuk
-            </a>
+            <PreorderLink className={styles.buy}>
+              Pre-order nu — {site.price}
+            </PreorderLink>
+            <Link
+              prefetch={false}
+              href="#fragment"
+              className={styles.secondary}
+            >
+              Lees een fragment
+            </Link>
           </div>
 
           <p className={styles.shipping}>
-            De laatste hoofdstukken worden nu afgerond
+            Paperback · {site.shipping.policy}
+            <br />
+            Pre-order · {site.expectedShippingPeriod}
           </p>
         </div>
 
         <div className={styles.coverWrap}>
           <Image
-            src={cover}
-            alt={`Omslag van ${site.title}`}
+            src={site.coverImage}
+            width={site.coverWidth}
+            height={site.coverHeight}
+            alt={`Boekomslag van ${site.title} van ${site.author}`}
             className={styles.cover}
             priority
-            sizes="(max-width: 720px) 100vw, 360px"
+            sizes="(max-width: 640px) 30vw, 360px"
           />
           <div className={styles.badge}>
             Hét cadeau

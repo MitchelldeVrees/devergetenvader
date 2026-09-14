@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { track } from "@/lib/analytics";
+import { PreorderLink } from "./PreorderLink";
 import styles from "./Fragment.module.css";
 
 const scores = [
@@ -16,7 +18,7 @@ export function Fragment() {
     <section id="fragment" className={`anchor ${styles.section}`}>
       <div className={`shell ${styles.grid}`}>
         <div className={styles.column}>
-          <p className={styles.kicker}>hoofdstuk twaalf</p>
+          <p className={styles.kicker}>hoofdstuk 10</p>
           <h2 className={styles.heading}>
             Hormonen:
             <br />
@@ -31,8 +33,12 @@ export function Fragment() {
             verzekeringsmaatschappij. Er zat een hond in. De hond werd ouder en
             het baasje ook, en aan het einde zaten ze samen op een bankje.
           </p>
-          <p className={styles.prose}>Oké, eerlijk: het wás een goeie reclame.</p>
-          <p className={styles.prose}>Maar ik zei: &ldquo;Het is maar een reclame.&rdquo;</p>
+          <p className={styles.prose}>
+            Oké, eerlijk: het wás een goeie reclame.
+          </p>
+          <p className={styles.prose}>
+            Maar ik zei: &ldquo;Het is maar een reclame.&rdquo;
+          </p>
 
           {/* Kept in the DOM so `aria-controls` always resolves to a real node. */}
           <p className={styles.prose} id="fragment-vervolg" hidden={!open}>
@@ -48,12 +54,18 @@ export function Fragment() {
           <button
             type="button"
             className={styles.toggle}
-            onClick={() => setOpen((v) => !v)}
+            onClick={() => {
+              if (!open) track("read_sample");
+              setOpen((v) => !v);
+            }}
             aria-expanded={open}
             aria-controls="fragment-vervolg"
           >
             {open ? "Minder tonen" : "Lees verder →"}
           </button>
+          <p className="section-action">
+            <PreorderLink />
+          </p>
         </div>
 
         <aside className={styles.card}>

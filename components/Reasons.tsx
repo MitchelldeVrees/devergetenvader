@@ -1,4 +1,5 @@
 import styles from "./Reasons.module.css";
+import { PreorderLink } from "./PreorderLink";
 
 const reasons = [
   {
@@ -8,13 +9,13 @@ const reasons = [
   },
   {
     n: "02",
-    title: "In één avond uit",
+    title: "Even een hoofdstuk",
     body: "Korte hoofdstukken. Precies lang genoeg voor een wachtkamer bij de verloskundige.",
   },
   {
     n: "03",
     title: "Hét cadeau",
-    body: "Voor de aanstaande vader die alles al heeft, behalve enig benul.",
+    body: "Voor je partner, broer of vriend. Eindelijk iets voor hem tussen alle rompertjes.",
   },
 ];
 
@@ -30,6 +31,9 @@ export function Reasons() {
           </li>
         ))}
       </ul>
+      <p className="section-action">
+        <PreorderLink />
+      </p>
     </section>
   );
 }

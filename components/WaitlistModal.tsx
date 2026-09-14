@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 
 import {
   createContext,
@@ -10,6 +11,7 @@ import {
   useState,
 } from "react";
 import styles from "./WaitlistModal.module.css";
+import { track } from "@/lib/analytics";
 
 const WaitlistContext = createContext<(() => void) | null>(null);
 
@@ -20,6 +22,7 @@ export function WaitlistProvider({ children }: { children: ReactNode }) {
   >("idle");
   const [errorMessage, setErrorMessage] = useState("");
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const submitting = useRef(false);
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -39,6 +42,8 @@ export function WaitlistProvider({ children }: { children: ReactNode }) {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (submitting.current) return;
+    submitting.current = true;
     const form = event.currentTarget;
     const formData = new FormData(form);
 
@@ -61,6 +66,7 @@ export function WaitlistProvider({ children }: { children: ReactNode }) {
       }
 
       setSubmissionState("success");
+      track("newsletter_signup");
       form.reset();
     } catch (error) {
       setSubmissionState("error");
@@ -69,6 +75,8 @@ export function WaitlistProvider({ children }: { children: ReactNode }) {
           ? error.message
           : "Inschrijven lukt nu even niet. Probeer het later opnieuw.",
       );
+    } finally {
+      submitting.current = false;
     }
   }
 
@@ -82,6 +90,23 @@ export function WaitlistProvider({ children }: { children: ReactNode }) {
         aria-labelledby="waitlist-title"
         onCancel={() => setIsOpen(false)}
         onClose={() => setIsOpen(false)}
+        onKeyDown={(event) => {
+          if (event.key !== "Tab") return;
+          const controls = Array.from(
+            event.currentTarget.querySelectorAll<HTMLElement>(
+              'button:not(:disabled), input:not(:disabled):not([tabindex="-1"]), a[href]',
+            ),
+          ).filter((element) => element.getClientRects().length > 0);
+          const first = controls[0];
+          const last = controls[controls.length - 1];
+          if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last?.focus();
+          } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first?.focus();
+          }
+        }}
         onMouseDown={(event) => {
           if (event.target === event.currentTarget) setIsOpen(false);
         }}
@@ -118,13 +143,14 @@ export function WaitlistProvider({ children }: { children: ReactNode }) {
             </div>
           ) : (
             <>
-              <p className={styles.kicker}>Nog heel even geduld</p>
+              <p className={styles.kicker}>Nog even over nadenken?</p>
               <h2 id="waitlist-title" className={styles.title}>
-                Het boek is bijna klaar
+                Een seintje over het boek
               </h2>
               <p className={styles.copy}>
-                Ik zit in de afrondende fase van het boek. Laat je e-mailadres
-                achter, dan hoor je als eerste wanneer het verschijnt.
+                Laat je e-mailadres achter voor updates over De vergeten vader.
+                Je schrijft je hiermee in voor boekupdates; je plaatst geen
+                bestelling.
               </p>
 
               <form className={styles.form} onSubmit={handleSubmit}>
@@ -167,7 +193,14 @@ export function WaitlistProvider({ children }: { children: ReactNode }) {
                 </p>
               )}
               <p className={styles.finePrint}>
-                Alleen updates over het boek. Je kunt je altijd uitschrijven.
+                Alleen updates over het boek. Je kunt je altijd uitschrijven.{" "}
+                <Link
+                  prefetch={false}
+                  href="/privacy"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Privacy
+                </Link>
               </p>
             </>
           )}

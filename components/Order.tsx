@@ -1,47 +1,47 @@
-import { site } from "@/lib/site";
+import Link from "next/link";
+import { book, site } from "@/lib/site";
 import { WaitlistButton } from "./WaitlistModal";
+import { PreorderLink } from "./PreorderLink";
 import styles from "./Order.module.css";
-
 export function Order() {
   return (
     <section id="bestel" className={`shell anchor ${styles.section}`}>
-      <h2 className={styles.heading}>Haal &rsquo;m in huis</h2>
-
+      <h2 className={styles.heading}>Voor de man naast de buik</h2>
       <div className={styles.grid}>
         <div className={styles.buyCard}>
-          <p className={styles.buyKicker}>Binnenkort verkrijgbaar</p>
+          <p className={styles.buyKicker}>
+            Reserveer jouw exemplaar uit de eerste oplage
+          </p>
           <div className={styles.price}>{site.price}</div>
           <p className={styles.specs}>
-            Paperback · {site.pages} pagina&rsquo;s · gratis verzending in NL
+            Paperback{book.pages ? ` · ${book.pages} pagina’s` : ""} ·{" "}
+            {book.shipping.policy}
           </p>
+          <p>{book.expectedShippingPeriod}</p>
           <div className={styles.buyActions}>
-            <WaitlistButton className={styles.primary}>
-              In de mand
-            </WaitlistButton>
-            <WaitlistButton className={styles.ghost}>
-              E-book — {site.ebookPrice}
-            </WaitlistButton>
+            <PreorderLink className={styles.primary} />
           </div>
           <p className={styles.payment}>
-            Laat je e-mail achter en hoor als eerste wanneer het boek uitkomt
+            Een pre-order: je betaalt nu, het boek wordt later verstuurd.
+            Rechtstreeks van {book.author}.
           </p>
         </div>
-
         <div className={styles.waitCard}>
-          <p className={styles.waitKicker}>Als eerste op de hoogte</p>
-          <div className={styles.waitHeading}>
-            Het boek is
-            <br />
-            bijna klaar
-          </div>
+          <p className={styles.waitKicker}>Nog even over nadenken?</p>
+          <h3 className={styles.waitHeading}>Eerst een seintje</h3>
           <p className={styles.waitBody}>
-            Ik zit in de afrondende fase. Laat je e-mailadres achter, dan hoor
-            je als eerste wanneer het boek verschijnt.
+            Dat mag. Ontvang af en toe een update over het boek. Of{" "}
+            <Link prefetch={false} href="/#fragment">
+              lees alvast een fragment
+            </Link>{" "}
+            — zonder je e-mailadres achter te laten.
           </p>
           <WaitlistButton className={styles.waitButton}>
-            Laat je e-mail achter
+            Houd mij op de hoogte
           </WaitlistButton>
-          <p className={styles.finePrint}>Geen nieuwsbrief-gezeur.</p>
+          <p className={styles.finePrint}>
+            Alleen boekupdates. Uitschrijven kan altijd.
+          </p>
         </div>
       </div>
     </section>

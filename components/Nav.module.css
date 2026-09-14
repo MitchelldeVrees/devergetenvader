@@ -12,7 +12,9 @@
 }
 
 .brand {
-  font: 700 14px/1 var(--font-archivo), sans-serif;
+  font:
+    700 14px/1 var(--font-archivo),
+    sans-serif;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--cream);
@@ -26,7 +28,9 @@
 }
 
 .link {
-  font: 600 13px/1 var(--font-archivo), sans-serif;
+  font:
+    600 13px/1 var(--font-archivo),
+    sans-serif;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--cream);
@@ -45,7 +49,9 @@
   background: var(--red);
   color: var(--cream);
   text-decoration: none;
-  font: 700 14px/1 var(--font-archivo), sans-serif;
+  font:
+    700 14px/1 var(--font-archivo),
+    sans-serif;
   padding: 13px 20px;
   border-radius: 100px;
   cursor: pointer;
@@ -56,4 +62,27 @@
 .cta:hover {
   background: var(--red-hover);
   color: var(--cream);
+}
+.brand,
+.link,
+.link:hover {
+  color: var(--navy);
+}
+@media (max-width: 640px) {
+  .nav {
+    gap: 10px;
+  }
+  .brand {
+    max-width: 115px;
+    line-height: 1.25;
+    font-size: 12px;
+    letter-spacing: 0.07em;
+  }
+  .link {
+    display: none;
+  }
+  .cta {
+    font-size: 13px;
+    padding: 13px 16px;
+  }
 }

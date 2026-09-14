@@ -1,21 +1,22 @@
+import Link from "next/link";
 import { site } from "@/lib/site";
-import { WaitlistButton } from "./WaitlistModal";
+import { PreorderLink } from "./PreorderLink";
 import styles from "./Nav.module.css";
-
 export function Nav() {
   return (
-    <nav className={styles.nav} aria-label="Hoofdnavigatie">
-      <a href="#top" className={styles.brand}>
+    <header className={styles.nav}>
+      <Link prefetch={false} href="/" className={styles.brand}>
         {site.title}
-      </a>
-      <div className={styles.links}>
-        <a href="#fragment" className={styles.link}>
+      </Link>
+      <nav className={styles.links} aria-label="Hoofdnavigatie">
+        <Link prefetch={false} href="/#fragment" className={styles.link}>
           Fragment
-        </a>
-        <WaitlistButton className={styles.cta}>
-          Bestel · {site.price}
-        </WaitlistButton>
-      </div>
-    </nav>
+        </Link>
+        <Link prefetch={false} href="/blog" className={styles.link}>
+          Verhalen
+        </Link>
+        <PreorderLink className={styles.cta} />
+      </nav>
+    </header>
   );
 }

@@ -12,6 +12,8 @@ function serverError(message: string) {
 }
 
 export async function POST(request: Request) {
+  if (request.headers.get("origin") !== new URL(request.url).origin)
+    return NextResponse.json({ error: "Ongeldige aanvraag." }, { status: 403 });
   let body: unknown;
 
   try {
@@ -57,57 +59,63 @@ export async function POST(request: Request) {
     return serverError("Resend environment variables are not configured");
   }
 
-  const resend = new Resend(apiKey);
-  const existingContact = await resend.contacts.get({ email });
+  try {
+    const resend = new Resend(apiKey);
+    const existingContact = await resend.contacts.get({ email });
 
-  if (existingContact.error?.name === "not_found") {
-    const created = await resend.contacts.create({
-      email,
-      unsubscribed: false,
-      segments: [{ id: segmentId }],
-    });
+    if (existingContact.error?.name === "not_found") {
+      const created = await resend.contacts.create({
+        email,
+        unsubscribed: false,
+        segments: [{ id: segmentId }],
+      });
 
-    if (created.error) {
-      return serverError(`Resend create failed (${created.error.name})`);
+      if (created.error) {
+        return serverError(`Resend create failed (${created.error.name})`);
+      }
+
+      return NextResponse.json({ success: true });
+    }
+
+    if (existingContact.error) {
+      return serverError(
+        `Resend lookup failed (${existingContact.error.name})`,
+      );
+    }
+
+    // A new, explicit signup opts this contact back in. This site currently has
+    // one mailing purpose: updates about the book.
+    if (existingContact.data.unsubscribed) {
+      const updated = await resend.contacts.update({
+        email,
+        unsubscribed: false,
+      });
+
+      if (updated.error) {
+        return serverError(`Resend update failed (${updated.error.name})`);
+      }
+    }
+
+    const currentSegments = await resend.contacts.segments.list({ email });
+    if (currentSegments.error) {
+      return serverError(
+        `Resend segment lookup failed (${currentSegments.error.name})`,
+      );
+    }
+
+    const isAlreadyOnWaitlist = currentSegments.data.data.some(
+      (segment) => segment.id === segmentId,
+    );
+
+    if (!isAlreadyOnWaitlist) {
+      const added = await resend.contacts.segments.add({ email, segmentId });
+      if (added.error) {
+        return serverError(`Resend segment add failed (${added.error.name})`);
+      }
     }
 
     return NextResponse.json({ success: true });
+  } catch {
+    return serverError("Contact provider unavailable");
   }
-
-  if (existingContact.error) {
-    return serverError(`Resend lookup failed (${existingContact.error.name})`);
-  }
-
-  // A new, explicit signup opts this contact back in. This site currently has
-  // one mailing purpose: updates about the book.
-  if (existingContact.data.unsubscribed) {
-    const updated = await resend.contacts.update({
-      email,
-      unsubscribed: false,
-    });
-
-    if (updated.error) {
-      return serverError(`Resend update failed (${updated.error.name})`);
-    }
-  }
-
-  const currentSegments = await resend.contacts.segments.list({ email });
-  if (currentSegments.error) {
-    return serverError(
-      `Resend segment lookup failed (${currentSegments.error.name})`,
-    );
-  }
-
-  const isAlreadyOnWaitlist = currentSegments.data.data.some(
-    (segment) => segment.id === segmentId,
-  );
-
-  if (!isAlreadyOnWaitlist) {
-    const added = await resend.contacts.segments.add({ email, segmentId });
-    if (added.error) {
-      return serverError(`Resend segment add failed (${added.error.name})`);
-    }
-  }
-
-  return NextResponse.json({ success: true });
 }
