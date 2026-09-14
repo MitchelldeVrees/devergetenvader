@@ -47,12 +47,61 @@ export type Order = {
     replyTo: string;
     subject: string;
     text: string;
+    html: string;
   } | null;
   email_first_attempt_at: Date | null;
   email_sent_at: Date | null;
 };
 export const hash = (value: string) =>
   createHash("sha256").update(value).digest("hex");
+const escapeHtml = (value: string) =>
+  value.replace(
+    /[&<>"']/g,
+    (c) =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[
+        c
+      ]!,
+  );
+function confirmationHtml(order: {
+  id: string;
+  name: string;
+  quantity: number;
+  unit_price: number;
+  shipping_cost: number;
+  amount_total: number;
+  expected_shipping_period: string;
+  shipping_address: {
+    street: string;
+    postalCode: string;
+    city: string;
+    country: string;
+  };
+}) {
+  const row = (label: string, value: string) =>
+    `<tr><td style="padding:6px 0;color:#2e3a6399;">${label}</td><td style="padding:6px 0;text-align:right;">${value}</td></tr>`;
+  return `<!doctype html>
+<html lang="nl">
+  <body style="margin:0;padding:0;background:#f6f1e7;font-family:Georgia,'Times New Roman',serif;color:#2e3a63;">
+    <div style="max-width:480px;margin:0 auto;padding:32px 24px;">
+      <p style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#982818;margin:0 0 8px;">${escapeHtml(book.title)}</p>
+      <h1 style="font-size:22px;margin:0 0 16px;color:#2e3a63;">Je pre-order is bevestigd</h1>
+      <p style="font-size:15px;line-height:1.6;margin:0 0 20px;">Hallo ${escapeHtml(order.name)},<br>Je betaling is ontvangen. Je pre-order staat klaar voor de eerste oplage.</p>
+      <table role="presentation" width="100%" style="border-collapse:collapse;font-size:14px;margin:0 0 20px;">
+        ${row("Bestelnummer", escapeHtml(order.id))}
+        ${row("Aantal", `${order.quantity} × ${escapeHtml(book.title)} (paperback)`)}
+        ${row("Prijs per stuk", money(order.unit_price))}
+        ${row("Verzending", money(order.shipping_cost))}
+        <tr><td style="padding:10px 0;font-weight:bold;border-top:1px solid #2e3a6330;">Betaald</td><td style="padding:10px 0;font-weight:bold;text-align:right;border-top:1px solid #2e3a6330;">${money(order.amount_total)}</td></tr>
+      </table>
+      <p style="font-size:14px;line-height:1.6;margin:0 0 20px;">Verwachte verzending: ${escapeHtml(order.expected_shipping_period)}</p>
+      <p style="font-size:14px;line-height:1.6;margin:0 0 4px;color:#2e3a6399;">Bezorgadres</p>
+      <p style="font-size:14px;line-height:1.6;margin:0 0 20px;">${escapeHtml(order.name)}<br>${escapeHtml(order.shipping_address.street)}<br>${escapeHtml(order.shipping_address.postalCode)} ${escapeHtml(order.shipping_address.city)}<br>${escapeHtml(order.shipping_address.country)}</p>
+      <p style="font-size:13px;line-height:1.6;color:#2e3a6399;margin:0 0 20px;">Dit is een pre-order: je hebt nu betaald, het boek wordt later verzonden. Vragen of annuleren? Mail <a href="mailto:${book.email}" style="color:#982818;">${book.email}</a> met je bestelnummer.<br>Voorwaarden: <a href="${book.canonicalDomain}/algemene-voorwaarden" style="color:#982818;">${book.canonicalDomain}/algemene-voorwaarden</a></p>
+      <p style="font-size:14px;margin:24px 0 0;">Bedankt,<br>${escapeHtml(book.author)}</p>
+    </div>
+  </body>
+</html>`;
+}
 const tokenFor = (requestId: string) =>
   createHmac("sha256", process.env.ORDER_TOKEN_SECRET!)
     .update(requestId)
@@ -170,6 +219,7 @@ export async function syncPayment(paymentId: string) {
             replyTo: book.email,
             subject: `Je pre-order van ${book.title} is bevestigd`,
             text: `Hallo ${order.name},\n\nJe betaling is ontvangen. Je pre-order staat klaar voor de eerste oplage.\n\nBestelnummer: ${order.id}\n${order.quantity} × ${book.title} (paperback) à ${money(order.unit_price)}\nVerzending: ${money(order.shipping_cost)}\nBetaald: ${money(order.amount_total)}\nVerwachte verzending: ${order.expected_shipping_period}\n\nBezorgadres:\n${order.name}\n${order.shipping_address.street}\n${order.shipping_address.postalCode} ${order.shipping_address.city}\n${order.shipping_address.country}\n\nDit is een pre-order: je hebt nu betaald, het boek wordt later verzonden.\nVragen of annuleren? Mail ${book.email} met je bestelnummer.\nVoorwaarden: ${book.canonicalDomain}/algemene-voorwaarden\n\nBedankt,\n${book.author}`,
+            html: confirmationHtml(order),
           }
         : null;
       await tx`UPDATE bookshop.orders SET payment_id = ${paymentId}, payment_status = ${payment.status}, amount_paid = ${paid ? order.amount_total : 0}, preorder_status = ${paid ? "reserved" : "awaiting_payment"}, paid_at = ${paid ? new Date(payment.paidAt || Date.now()) : null}, email_payload = COALESCE(email_payload, ${emailPayload ? tx.json(emailPayload) : null}) WHERE id = ${order.id}`;
