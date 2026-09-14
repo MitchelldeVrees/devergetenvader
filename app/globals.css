@@ -337,6 +337,28 @@ input {
   scroll-margin-top: var(--nav-h);
 }
 
+/* Skip layout and paint work for sections that are still far below the
+   viewport. The intrinsic size keeps the scrollbar stable while scrolling. */
+main > section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 700px;
+}
+
+button,
+a,
+summary {
+  -webkit-tap-highlight-color: rgba(46, 58, 99, 0.16);
+}
+
+@media (max-width: 520px) {
+  :root {
+    --gutter: 20px;
+    --section-y: 48px;
+    --nav-h: 64px;
+    --title: clamp(52px, 21vw, 76px);
+  }
+}
+
 @keyframes dvwave {
   0%,
   100% {
