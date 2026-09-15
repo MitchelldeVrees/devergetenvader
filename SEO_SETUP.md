@@ -75,7 +75,9 @@ Na deploy controleren:
 
 ## 5. Analytics
 
-Stel optioneel `NEXT_PUBLIC_GA_MEASUREMENT_ID=G-…` in en deploy opnieuw. Accepteer/Weiger hebben gelijkwaardige knoppen. Er laadt niets van Google vóór toestemming. Do Not Track wordt gerespecteerd. De keuze kan onderaan worden ingetrokken.
+Bij een eerste bezoek verschijnt op iedere pagina een vaste toestemmingsbanner onderaan het scherm. Accepteren of weigeren sluit de banner en bewaart de keuze. Via ‘Privacyvoorkeuren wijzigen’ in de footer kun je de banner opnieuw openen. Op mobiel verschijnt de vaste pre-orderknop pas wanneer de banner gesloten is.
+
+De globale layout gebruikt Google Analytics met Measurement ID `G-44KLVCL4WB` op alle pagina's. Dit publieke ID is de standaard in de code. `NEXT_PUBLIC_GA_MEASUREMENT_ID` kan het overschrijven; een expliciet lege waarde schakelt analytics uit. Bouw/deploy opnieuw na wijzigingen. Accepteer/Weiger hebben gelijkwaardige knoppen. Er laadt niets van Google vóór toestemming. Do Not Track wordt gerespecteerd. De keuze kan onderaan worden ingetrokken. Publieke routes sturen handmatige pageviews bij navigatie; individuele bestelpagina's sturen geen pageview met ordernummer en behouden de bestaande gecontroleerde aankoopmeting.
 
 Zet in de GA4-webstream **Enhanced measurement uit**, vooral automatische pageviews, formulierinteracties en URL/history-tracking. De applicatie verstuurt zelf gecontroleerde events zonder queryparameters, referrers of kopergegevens. Schakel Google Signals, advertentiepersonalisatie en onnodige data sharing uit; stel een passende retentie in.
 

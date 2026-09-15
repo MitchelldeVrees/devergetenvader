@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { site } from "@/lib/site";
 import { PreorderLink } from "./PreorderLink";
+import { PrivacyPreferences } from "./PrivacyPreferences";
 import styles from "./Footer.module.css";
 export function Footer() {
   return (
@@ -49,6 +50,7 @@ export function Footer() {
           <Link prefetch={false} href="/privacy" className={styles.link}>
             Privacy
           </Link>
+          <PrivacyPreferences className={styles.link} />
         </nav>
       </div>
     </footer>

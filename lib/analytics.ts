@@ -1,4 +1,7 @@
 "use client";
+// Public ID; an explicitly empty environment override disables analytics.
+export const analyticsMeasurementId =
+  process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? "G-44KLVCL4WB";
 export type AnalyticsEvent =
   | "view_book"
   | "read_sample"

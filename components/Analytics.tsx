@@ -1,27 +1,72 @@
 "use client";
 import Link from "next/link";
 import Script from "next/script";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
-import { track } from "@/lib/analytics";
+import {
+  analyticsMeasurementId as measurementId,
+  track,
+} from "@/lib/analytics";
 import { PreorderLink } from "./PreorderLink";
 import { site } from "@/lib/site";
-// Public Google measurement ID. An explicit empty override disables analytics.
-const measurementId =
-  process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? "G-44KLVCL4WB";
 export function Analytics() {
   const pathname = usePathname();
   const privatePage = pathname.startsWith("/bestelling/");
   const [consent, setConsent] = useState<string | null>(null);
+  const [consentLoaded, setConsentLoaded] = useState(false);
+  const [preferencesOpen, setPreferencesOpen] = useState(false);
+  const banner = useRef<HTMLElement>(null);
+  const declineButton = useRef<HTMLButtonElement>(null);
+  const preferencesOpener = useRef<HTMLElement | null>(null);
+  const showConsentBanner = Boolean(
+    measurementId &&
+    /^G-[A-Z0-9]+$/.test(measurementId) &&
+    consentLoaded &&
+    (consent === null || preferencesOpen),
+  );
   const [ready, setReady] = useState(false);
   const [pastHero, setPastHero] = useState(false);
   useEffect(() => {
     try {
-      setConsent(localStorage.getItem("dvv-analytics-consent"));
+      const saved = localStorage.getItem("dvv-analytics-consent");
+      setConsent(saved === "granted" || saved === "denied" ? saved : null);
     } catch {
       setConsent("denied");
     }
+    setConsentLoaded(true);
   }, []);
+  useEffect(() => {
+    function openPreferences() {
+      preferencesOpener.current =
+        document.activeElement instanceof HTMLElement
+          ? document.activeElement
+          : null;
+      setPreferencesOpen(true);
+    }
+    window.addEventListener("dvv-open-privacy-preferences", openPreferences);
+    return () =>
+      window.removeEventListener(
+        "dvv-open-privacy-preferences",
+        openPreferences,
+      );
+  }, []);
+  useEffect(() => {
+    if (preferencesOpen) declineButton.current?.focus({ preventScroll: true });
+  }, [preferencesOpen]);
+  useEffect(() => {
+    if (!showConsentBanner || !banner.current) return;
+    const observer = new ResizeObserver(([entry]) => {
+      document.documentElement.style.setProperty(
+        "--consent-height",
+        `${entry.target.getBoundingClientRect().height}px`,
+      );
+    });
+    observer.observe(banner.current);
+    return () => {
+      observer.disconnect();
+      document.documentElement.style.removeProperty("--consent-height");
+    };
+  }, [showConsentBanner]);
   useEffect(() => {
     const hero = document.getElementById("top");
     if (!hero || pathname !== "/") {
@@ -68,6 +113,9 @@ export function Analytics() {
       /* Do not require storage. */
     }
     setConsent(value);
+    setPreferencesOpen(false);
+    if (preferencesOpen)
+      preferencesOpener.current?.focus({ preventScroll: true });
     if (value === "denied") {
       window.gtag?.("consent", "update", {
         analytics_storage: "denied",
@@ -115,36 +163,34 @@ export function Analytics() {
             }}
           />
         )}
-      {measurementId && (
-        <aside className="consent" aria-label="Privacyvoorkeuren">
-          {consent === null ? (
-            <>
-              <p>
-                Mogen we bezoek- en bestelstatistieken meten met Google
-                Analytics? Zonder toestemming laden we geen analytics.{" "}
-                <Link prefetch={false} href="/privacy">
-                  Lees hoe dit werkt
-                </Link>
-                .
-              </p>
-              <button onClick={() => choose("denied")}>Nee, bedankt</button>
-              <button onClick={() => choose("granted")}>
-                Statistieken toestaan
-              </button>
-            </>
-          ) : (
-            <button
-              onClick={() => {
-                choose("denied");
-                setConsent(null);
-              }}
-            >
-              Privacyvoorkeuren wijzigen
+      {showConsentBanner && (
+        <aside
+          ref={banner}
+          className="consent-banner"
+          aria-labelledby="consent-title"
+        >
+          <div className="consent-copy">
+            <h2 id="consent-title">Even over je privacy</h2>
+            <p>
+              Mogen we met Google Analytics meten hoe je de website gebruikt? Zo
+              weten we wat werkt. Je kunt je keuze altijd wijzigen.{" "}
+              <Link prefetch={false} href="/privacy">
+                Lees ons privacybeleid
+              </Link>
+              .
+            </p>
+          </div>
+          <div className="consent-actions">
+            <button ref={declineButton} onClick={() => choose("denied")}>
+              Nee, bedankt
             </button>
-          )}
+            <button onClick={() => choose("granted")}>
+              Statistieken toestaan
+            </button>
+          </div>
         </aside>
       )}
-      {pastHero && (
+      {pastHero && !showConsentBanner && (
         <div className="sticky-preorder">
           <PreorderLink>Pre-order nu · {site.price}</PreorderLink>
         </div>
