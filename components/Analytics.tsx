@@ -6,7 +6,9 @@ import { usePathname } from "next/navigation";
 import { track } from "@/lib/analytics";
 import { PreorderLink } from "./PreorderLink";
 import { site } from "@/lib/site";
-const measurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+// Public Google measurement ID. An explicit empty override disables analytics.
+const measurementId =
+  process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? "G-44KLVCL4WB";
 export function Analytics() {
   const pathname = usePathname();
   const privatePage = pathname.startsWith("/bestelling/");
