@@ -99,6 +99,38 @@ test("all content has unique metadata, self-canonicals and resolvable related ro
       assert.ok(publicRoutes.includes(`/${related}`));
   }
 });
+test("content links resolve, headings are unique and FAQ answers are present", () => {
+  const anchors = new Set(["/#fragment"]);
+  for (const page of contentPages)
+    for (const section of page.sections)
+      if (section.id) anchors.add(`/${page.slug}#${section.id}`);
+  assert.equal(
+    new Set(contentPages.map((p) => p.heading)).size,
+    contentPages.length,
+  );
+  for (const page of contentPages) {
+    assert.ok(page.updated >= page.published);
+    const texts = [
+      page.intro,
+      ...page.sections.flatMap((s) => [
+        ...s.paragraphs,
+        ...(s.items || []).map((i) => i.text),
+        ...(s.after || []),
+      ]),
+      ...(page.faq || []).map((f) => f.a),
+    ];
+    for (const text of texts) {
+      assert.equal(/\{(?!price|shipping|period)/.test(text), false, text);
+      for (const [, , href] of text.matchAll(/\[([^\]]+)\]\(([^)\s]+)\)/g)) {
+        if (href.startsWith("https://")) continue;
+        const [path] = href.split("#");
+        assert.ok(publicRoutes.includes(path), href);
+        if (href.includes("#")) assert.ok(anchors.has(href), href);
+      }
+    }
+    for (const item of page.faq || []) assert.ok(item.q && item.a);
+  }
+});
 test("sitemap lists all and only indexable routes; robots references the canonical host", () => {
   assert.deepEqual(
     sitemap().map((p) => p.url),

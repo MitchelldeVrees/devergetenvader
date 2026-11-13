@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { absoluteUrl, book } from "./site";
+import type { ContentPage } from "./content";
 export function pageMetadata(
   title: string,
   description: string,
@@ -67,5 +68,53 @@ export function bookSchema() {
         ? { availabilityStarts: book.expectedShippingDate }
         : {}),
     },
+  };
+}
+const authorRef = {
+  "@type": "Person",
+  "@id": absoluteUrl("/over-sem#author"),
+  name: book.author,
+  url: absoluteUrl("/over-sem"),
+};
+export function articleSchema(page: ContentPage, commercial: boolean) {
+  const url = absoluteUrl(`/${page.slug}`);
+  return {
+    "@context": "https://schema.org",
+    "@type": commercial ? "WebPage" : "Article",
+    headline: page.heading,
+    name: page.heading,
+    description: page.description,
+    url,
+    inLanguage: "nl",
+    mainEntityOfPage: url,
+    image: absoluteUrl(book.coverImage),
+    datePublished: page.published,
+    dateModified: page.updated,
+    author: authorRef,
+    publisher: authorRef,
+    ...(commercial ? { about: { "@id": absoluteUrl("/#book") } } : {}),
+  };
+}
+export function breadcrumbSchema(trail: { name: string; path: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: trail.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.name,
+      item: absoluteUrl(item.path),
+    })),
+  };
+}
+export function faqSchema(items: { q: string; a: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items.map(({ q, a }) => ({
+      "@type": "Question",
+      name: q,
+      acceptedAnswer: { "@type": "Answer", text: a },
+    })),
   };
 }

@@ -7,7 +7,7 @@ export function ArticleCards() {
       <h2>Ook naast het boek valt er iets te lezen</h2>
       <div className="article-grid">
         {contentPages
-          .filter((p) => !["Het boek", "Cadeau-idee"].includes(p.category))
+          .filter((p) => p.category !== "Het boek")
           .map((page) => (
             <article className="article-card" key={page.slug}>
               <p className="kicker">{page.category}</p>

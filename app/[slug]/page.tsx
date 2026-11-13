@@ -2,10 +2,27 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { contentPages } from "@/lib/content";
-import { book, absoluteUrl } from "@/lib/site";
-import { bookSchema, pageMetadata } from "@/lib/seo";
+import { book } from "@/lib/site";
+import {
+  articleSchema,
+  bookSchema,
+  breadcrumbSchema,
+  faqSchema,
+  pageMetadata,
+} from "@/lib/seo";
 import { JsonLd } from "@/components/JsonLd";
 import { Order } from "@/components/Order";
+import { RichText, plainText } from "@/components/RichText";
+import { PreorderLink } from "@/components/PreorderLink";
+
+const dateLabel = (iso: string) =>
+  new Intl.DateTimeFormat("nl-NL", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(`${iso}T00:00:00Z`));
+
 export function generateStaticParams() {
   return contentPages.map(({ slug }) => ({ slug }));
 }
@@ -28,26 +45,20 @@ export default async function ContentPage({
   const page = contentPages.find((p) => p.slug === slug);
   if (!page) notFound();
   const commercial = ["Het boek", "Cadeau-idee"].includes(page.category);
+  const trail = [
+    { name: book.title, path: "/" },
+    { name: "Verhalen & tips", path: "/blog" },
+    { name: page.heading, path: `/${slug}` },
+  ];
   return (
     <>
-      <JsonLd
-        data={{
-          "@context": "https://schema.org",
-          "@type": commercial ? "WebPage" : "Article",
-          headline: page.heading,
-          name: page.heading,
-          description: page.description,
-          url: absoluteUrl(`/${slug}`),
-          inLanguage: "nl",
-          mainEntityOfPage: absoluteUrl(`/${slug}`),
-          image: absoluteUrl(book.coverImage),
-          publisher: {
-            "@type": "Person",
-            name: book.author,
-            url: absoluteUrl("/over-sem"),
-          },
-        }}
-      />
+      <JsonLd data={articleSchema(page, commercial)} />
+      <JsonLd data={breadcrumbSchema(trail)} />
+      {page.faq && (
+        <JsonLd
+          data={faqSchema(page.faq.map(({ q, a }) => ({ q, a: plainText(a) })))}
+        />
+      )}
       {slug === "boek-aanstaande-vader" && <JsonLd data={bookSchema()} />}
       <article className="content-shell prose">
         <nav className="breadcrumbs" aria-label="Broodkruimels">
@@ -61,7 +72,18 @@ export default async function ContentPage({
         </nav>
         <p className="kicker">{page.category}</p>
         <h1>{page.heading}</h1>
-        <p className="intro">{page.intro}</p>
+        {page.tagline && <p className="tagline">{page.tagline}</p>}
+        <p className="intro">
+          <RichText text={page.intro} />
+        </p>
+        <p className="byline">
+          Door{" "}
+          <Link prefetch={false} href="/over-sem">
+            {book.author}
+          </Link>{" "}
+          · Bijgewerkt op{" "}
+          <time dateTime={page.updated}>{dateLabel(page.updated)}</time>
+        </p>
         {commercial && (
           <Image
             className="article-cover"
@@ -72,14 +94,54 @@ export default async function ContentPage({
             sizes="220px"
           />
         )}
-        {page.sections.map((section) => (
-          <section key={section.heading}>
-            <h2>{section.heading}</h2>
-            {section.paragraphs.map((p) => (
-              <p key={p}>{p}</p>
-            ))}
+        {page.sections.map((section) => {
+          const List = section.ordered ? "ol" : "ul";
+          return (
+            <section key={section.heading} id={section.id}>
+              <h2>{section.heading}</h2>
+              {section.paragraphs.map((p) => (
+                <p key={p}>
+                  <RichText text={p} />
+                </p>
+              ))}
+              {section.items && (
+                <List className="item-list">
+                  {section.items.map((item) => (
+                    <li key={item.title}>
+                      <h3>{item.title}</h3>
+                      <p>
+                        <RichText text={item.text} />
+                      </p>
+                    </li>
+                  ))}
+                </List>
+              )}
+              {section.after?.map((p) => (
+                <p key={p}>
+                  <RichText text={p} />
+                </p>
+              ))}
+            </section>
+          );
+        })}
+        {page.faq && (
+          <section>
+            <h2>Veelgestelde vragen</h2>
+            <div className="faq">
+              {page.faq.map(({ q, a }) => (
+                <details key={q}>
+                  <summary>{q}</summary>
+                  <p>
+                    <RichText text={a} />
+                  </p>
+                </details>
+              ))}
+            </div>
           </section>
-        ))}
+        )}
+        <p className="section-action">
+          <PreorderLink />
+        </p>
         <p>
           <Link prefetch={false} href="/#fragment">
             Lees het fragment uit hoofdstuk 10: Hormonen, een veldgids →
