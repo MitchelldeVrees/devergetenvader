@@ -110,6 +110,40 @@
   font-family: var(--font-garamond), serif;
   font-size: 22px;
 }
+.prose .tagline {
+  font:
+    400 clamp(22px, 2.6vw, 30px)/1.25 var(--font-caveat),
+    cursive;
+  color: var(--red);
+  margin: -12px 0 22px;
+}
+.prose .byline {
+  font-family: var(--font-archivo), sans-serif;
+  font-size: 14px;
+  opacity: 0.8;
+}
+.item-list {
+  padding-left: 1.4em;
+  margin: 8px 0 24px;
+}
+.item-list li {
+  margin-bottom: 18px;
+  padding-left: 4px;
+}
+.item-list li::marker {
+  font-weight: 700;
+  color: var(--red);
+}
+.item-list h3 {
+  margin: 0 0 4px;
+}
+.item-list p {
+  margin: 0;
+}
+.prose .faq p {
+  font-family: var(--font-garamond), serif;
+  font-size: 20px;
+}
 .prose .kicker {
   font-family: var(--font-archivo), sans-serif;
   font-size: 12px;
